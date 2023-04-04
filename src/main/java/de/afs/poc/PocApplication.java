@@ -8,7 +8,7 @@ import io.camunda.zeebe.spring.client.annotation.Deployment;
 
 @SpringBootApplication
 @EnableZeebeClient
-@Deployment(resources = {"classpath:foo.bpmn"})
+@Deployment(resources = {"classpath:*.bpmn"})
 public class PocApplication {
 
 	public static void main(String[] args) {
