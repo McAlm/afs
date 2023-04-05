@@ -1,0 +1,43 @@
+{
+  "components": [
+    {
+      "text": "# Dies ist eine Camunda Form",
+      "type": "text",
+      "id": "Field_14271k3"
+    },
+    {
+      "label": "Mitarbeiter",
+      "type": "textfield",
+      "id": "Field_0sman4u",
+      "key": "employeeName",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Zuständigkeit",
+      "type": "textfield",
+      "id": "Field_06reyio",
+      "key": "zustaendigkeit",
+      "validate": {
+        "required": true
+      },
+      "appearance": {}
+    },
+    {
+      "label": "Problem gelöst?",
+      "type": "checkbox",
+      "id": "Field_1dum0j0",
+      "key": "problemSolved"
+    }
+  ],
+  "type": "default",
+  "id": "fipsProblemForm",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.1.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.9.0"
+  },
+  "schemaVersion": 7
+}
