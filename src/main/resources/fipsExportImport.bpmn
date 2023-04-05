@@ -19,14 +19,20 @@
       }
     },
     {
-      "label": "Zuständigkeit",
+      "label": "Alte Zuständigkeit",
       "type": "textfield",
       "id": "Field_06reyio",
-      "key": "zustaendigkeit",
+      "key": "alteZustaendigkeit",
       "validate": {
         "required": true
       },
       "appearance": {}
+    },
+    {
+      "label": "Neue Zuständigkeit",
+      "type": "textfield",
+      "id": "Field_03don54",
+      "key": "neueZustaendigkeit"
     },
     {
       "label": "Problem gelöst?",
@@ -111,14 +117,19 @@
     <bpmn:userTask id="fipsProblemBeheben" name="Problem beheben">
       <bpmn:extensionElements>
         <zeebe:formDefinition formKey="camunda-forms:bpmn:userTaskForm_01bnjns" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=zustaendigkeit" target="alteZustaendigkeit" />
+          <zeebe:output source="=neueZustaendigkeit" target="zustaendigkeit" />
+          <zeebe:output source="=employeeName" target="employeeName" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1g7fn8d</bpmn:incoming>
       <bpmn:outgoing>Flow_1htmiu8</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_1htmiu8" sourceRef="fipsProblemBeheben" targetRef="Gateway_0punfa8" />
+    <bpmn:sequenceFlow id="Flow_1htmiu8" sourceRef="fipsProblemBeheben" targetRef="Activity_0772nyf" />
     <bpmn:exclusiveGateway id="Gateway_0punfa8">
       <bpmn:incoming>Flow_0vw93g5</bpmn:incoming>
-      <bpmn:incoming>Flow_1htmiu8</bpmn:incoming>
+      <bpmn:incoming>Flow_04uz0m2</bpmn:incoming>
       <bpmn:outgoing>Flow_1bt7i65</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1bt7i65" sourceRef="Gateway_0punfa8" targetRef="Activity_1whg0cn" />
@@ -130,6 +141,18 @@
       <bpmn:incoming>Flow_0ac0n3b</bpmn:incoming>
       <bpmn:outgoing>Flow_0vw93g5</bpmn:outgoing>
     </bpmn:businessRuleTask>
+    <bpmn:sequenceFlow id="Flow_04uz0m2" sourceRef="Activity_0772nyf" targetRef="Gateway_0punfa8" />
+    <bpmn:serviceTask id="Activity_0772nyf" name="Problem protokollieren">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="errorLog" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=employeeName" target="employee" />
+          <zeebe:input source="=zustaendigkeit" target="responsibility" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1htmiu8</bpmn:incoming>
+      <bpmn:outgoing>Flow_04uz0m2</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:error id="Error_10we5t0" name="INVALID_DATA" errorCode="INVALID_DATA" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -137,11 +160,17 @@
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="122" y="209" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0yg518x_di" bpmnElement="Activity_1whg0cn">
-        <dc:Bounds x="490" y="187" width="100" height="80" />
+      <bpmndi:BPMNShape id="DataObjectReference_0bivd1e_di" bpmnElement="DataObjectReference_0bivd1e">
+        <dc:Bounds x="632" y="85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="635" y="142" width="30" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0ya2qbz_di" bpmnElement="Event_0ya2qbz">
         <dc:Bounds x="972" y="209" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yg518x_di" bpmnElement="Activity_1whg0cn">
+        <dc:Bounds x="490" y="187" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1g7o2ol_di" bpmnElement="Activity_1qpiz4g">
         <dc:Bounds x="740" y="187" width="100" height="80" />
@@ -153,14 +182,12 @@
       <bpmndi:BPMNShape id="Gateway_0punfa8_di" bpmnElement="Gateway_0punfa8" isMarkerVisible="true">
         <dc:Bounds x="405" y="202" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_0bivd1e_di" bpmnElement="DataObjectReference_0bivd1e">
-        <dc:Bounds x="632" y="85" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="635" y="142" width="30" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0k44gdq_di" bpmnElement="Activity_0guasy1">
         <dc:Bounds x="230" y="187" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1594yxy_di" bpmnElement="Activity_0772nyf">
+        <dc:Bounds x="610" y="390" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1rsytlx_di" bpmnElement="Event_1nt6eyv">
@@ -177,13 +204,13 @@
         <di:waypoint x="590" y="227" />
         <di:waypoint x="740" y="227" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataOutputAssociation_0beskae_di" bpmnElement="DataOutputAssociation_0beskae">
-        <di:waypoint x="578" y="187" />
-        <di:waypoint x="632" y="131" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_059pmfr_di" bpmnElement="Flow_059pmfr">
         <di:waypoint x="840" y="227" />
         <di:waypoint x="972" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0beskae_di" bpmnElement="DataOutputAssociation_0beskae">
+        <di:waypoint x="578" y="187" />
+        <di:waypoint x="632" y="131" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataInputAssociation_08hhgj1_di" bpmnElement="DataInputAssociation_08hhgj1">
         <di:waypoint x="668" y="125" />
@@ -197,8 +224,7 @@
       <bpmndi:BPMNEdge id="Flow_1htmiu8_di" bpmnElement="Flow_1htmiu8">
         <di:waypoint x="920" y="390" />
         <di:waypoint x="920" y="430" />
-        <di:waypoint x="430" y="430" />
-        <di:waypoint x="430" y="252" />
+        <di:waypoint x="710" y="430" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bt7i65_di" bpmnElement="Flow_1bt7i65">
         <di:waypoint x="455" y="227" />
@@ -207,6 +233,11 @@
       <bpmndi:BPMNEdge id="Flow_0vw93g5_di" bpmnElement="Flow_0vw93g5">
         <di:waypoint x="330" y="227" />
         <di:waypoint x="405" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04uz0m2_di" bpmnElement="Flow_04uz0m2">
+        <di:waypoint x="610" y="430" />
+        <di:waypoint x="430" y="430" />
+        <di:waypoint x="430" y="252" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

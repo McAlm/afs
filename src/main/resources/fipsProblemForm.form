@@ -15,14 +15,20 @@
       }
     },
     {
-      "label": "Zuständigkeit",
+      "label": "Alte Zuständigkeit",
       "type": "textfield",
       "id": "Field_06reyio",
-      "key": "zustaendigkeit",
+      "key": "alteZustaendigkeit",
       "validate": {
         "required": true
       },
       "appearance": {}
+    },
+    {
+      "label": "Neue Zuständigkeit",
+      "type": "textfield",
+      "id": "Field_03don54",
+      "key": "neueZustaendigkeit"
     },
     {
       "label": "Problem gelöst?",
