@@ -34,3 +34,4 @@ build/
 src/main/.DS_Store
 
 test
+.DS_Store

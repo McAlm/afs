@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="Definitions_1u89xm8" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
+  <decision id="evaluateEndpoint" name="Evaluate Endpoint">
+    <decisionTable id="DecisionTable_1c2b27l">
+      <input id="Input_1" label="Environment">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>env</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_0mxogc3">
+          <text>"test","prod"</text>
+        </inputValues>
+      </input>
+      <output id="Output_1" label="EndpointUrl" name="endPoint" typeRef="string" biodi:width="578" />
+      <rule id="DecisionRule_10hs4rj">
+        <inputEntry id="UnaryTests_1ul3uhy">
+          <text>"test"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_02rx514">
+          <text>"https://f2b64db6-393e-4846-a68b-6100c632468a.mock.pstmn.io"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0rw3xjm">
+        <inputEntry id="UnaryTests_0kwjsro">
+          <text>"prod"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_16f4yre">
+          <text>"https://f2b64db6-393e-4846-a68b-6100c632468a.mock.pstmn.io"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="evaluateEndpoint">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
