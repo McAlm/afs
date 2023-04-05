@@ -1,0 +1,48 @@
+{
+    "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+    "name": "errorLogger",
+    "id": "79fb2eab-2ec2-4fa3-8060-8763f85b5109",
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "elementType": {
+      "value": "bpmn:ServiceTask"
+    },
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "errorLog",
+        "binding": {
+          "type": "zeebe:taskDefinition:type"
+        }
+      },
+      {
+        "label": "Fehlerhafte Zuständigkeit",
+        "description": "Variable die die fehlerhafte ZUständigkeit referenziert",
+        "value": "",
+        "type": "String",
+        "feel": "optional",
+        "binding": {
+          "type": "zeebe:input",
+          "name": "responsibility"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      },
+      {
+        "label": "Mitarbeiter",
+        "description": "",
+        "value": "",
+        "type": "String",
+        "feel": "optional",
+        "binding": {
+          "type": "zeebe:input",
+          "name": "employee"
+        },
+        "constraints": {
+          "notEmpty": true
+        }
+      }
+    ]
+  }
