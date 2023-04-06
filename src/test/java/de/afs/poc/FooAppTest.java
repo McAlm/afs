@@ -1,6 +1,7 @@
 package de.afs.poc;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Test;
@@ -33,22 +34,27 @@ public class FooAppTest extends ZeebeTestUtil {
 
     @Test
     public void testFoo() throws InterruptedException, TimeoutException {
+
+        Mockito.when(fooService.executeFoo("foo")).thenReturn("fooBAR");
         // start a process instance
         ProcessInstanceEvent processInstance = client.newCreateInstanceCommand() //
                 .bpmnProcessId("foo").latestVersion() //
+                .variables(Map.of("foo", "foo"))
                 .send().join();
         BpmnAssert.assertThat(processInstance).isStarted();
 
         // completeServiceTask("foo");
 
-        waitForServiceTask("fooTask", Duration.ofSeconds(1));
+        waitForServiceTask("fooTask", Duration.ofSeconds(5));
+
+        
 
         completeUserTask("barTask");
 
         BpmnAssert.assertThat(processInstance).hasPassedElement("EndEvent").isCompleted();
 
         // And verify it caused the right side effects b calling the business methods
-        Mockito.verify(fooService).executeFoo();
+        Mockito.verify(fooService).executeFoo("foo");
         Mockito.verifyNoMoreInteractions(fooService);
 
     }

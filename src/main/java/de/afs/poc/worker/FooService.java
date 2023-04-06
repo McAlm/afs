@@ -8,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class FooService {
 
-    public void executeFoo(){
+    public String executeFoo(String foo){
         log.info("executing some logic on foo....");
+        return foo + "bar";
     }
 }

@@ -2,6 +2,11 @@ package de.afs.poc;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -15,7 +20,9 @@ import io.camunda.zeebe.client.api.response.DeploymentEvent;
 import io.camunda.zeebe.process.test.api.ZeebeTestEngine;
 import io.camunda.zeebe.protocol.impl.record.value.processinstance.ProcessInstanceRecord;
 import io.camunda.zeebe.protocol.record.Record;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ZeebeTestUtil {
 
     private static final Duration MAX_WAIT_FOR_IDLE_TIME = Duration.ofSeconds(5);
@@ -157,6 +164,11 @@ public class ZeebeTestUtil {
 
     public void completeUserTask(final String elementId)
             throws InterruptedException, TimeoutException {
+        completeUserTask(elementId, null);
+    }
+
+    public void completeUserTask(final String elementId, Map<String, Object> variables)
+            throws InterruptedException, TimeoutException {
 
         waitForIdleState(MAX_WAIT_FOR_IDLE_TIME);
 
@@ -173,8 +185,12 @@ public class ZeebeTestUtil {
 
         for (final ActivatedJob userTask : activateJobsResponse.getJobs()) {
             if (userTask.getElementId().equals(elementId)) {
-                // complete the user task we care about
-                client.newCompleteCommand(userTask).send().join();
+                if (variables == null) {
+                    // complete the user task we care about
+                    client.newCompleteCommand(userTask).send().join();
+                } else {
+                    client.newCompleteCommand(userTask).variables(variables).send().join();
+                }
                 userTaskWasCompleted = true;
             } else {
                 // fail all other user tasks that were activated
@@ -191,19 +207,40 @@ public class ZeebeTestUtil {
         }
     }
 
+    private boolean taskCompleted = false;
+
     public void waitForServiceTask(String taskId, Duration maxWait) throws InterruptedException, TimeoutException {
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
-        engine.waitForIdleState(Duration.ofSeconds(5));
-        engine.waitForBusyState(maxWait);
-        engine.waitForIdleState(Duration.ofSeconds(5));
+        Runnable run = () -> {
+            log.info("running the runnable run...");
+            List<Boolean> completed = StreamSupport
+                    .stream(engine.getRecordStreamSource().getRecords().spliterator(), false)
+                    .map(r -> {
+                        return isEventCompleted(taskId, r);
+                    }).collect(Collectors.toList());
+            taskCompleted = completed.contains(true);
+        };
 
-        List<Boolean> completed = StreamSupport.stream(engine.getRecordStreamSource().getRecords().spliterator(), false)
-                .map(r -> {
-                    return isEventCompleted(taskId, r);
-                }).collect(Collectors.toList());
+        // init Delay = 5, repeat the task every 1 second
+        ScheduledFuture<?> scheduledFuture = executor.scheduleAtFixedRate(run, 10, 100, TimeUnit.MILLISECONDS);
 
-        if (!completed.contains(true)) {
+        long start = System.currentTimeMillis();
+        long end = start + maxWait.toMillis();
+        while (System.currentTimeMillis() < end) {
+            Thread.sleep(100);
+            log.info("task is completed " + taskCompleted);
+            if (taskCompleted) {
+                scheduledFuture.cancel(true);
+                executor.shutdown();
+                break;
+            }
+        }
+
+        if (!taskCompleted) {
             Assertions.fail("Task " + taskId + " was expected to complete but it was not");
+        } else {
+            taskCompleted = false;
         }
 
     }
