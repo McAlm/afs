@@ -16,8 +16,10 @@ import de.afs.poc.dto.KommunalesProdukt;
 import io.camunda.connector.api.annotation.OutboundConnector;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;
 import io.camunda.connector.api.outbound.OutboundConnectorFunction;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 @OutboundConnector(name = "Csv2Json", inputVariables = { "csvInputFileName" }, type = "de.afs.poc.csv2Json:1")
 public class Csv2JsonConnector implements OutboundConnectorFunction {
 
@@ -41,6 +43,7 @@ public class Csv2JsonConnector implements OutboundConnectorFunction {
                     .configure(SerializationFeature.INDENT_OUTPUT, true)
                     .writeValue(new File("src/main/resources/kommunaleProdukteFromCsv.json"), readAll);
             dto.setJsonOutputFileName("kommunaleProdukteFromCsv.json");
+            log.info("Csv2JsonConnector returning " + dto.toString()); 
             return dto;
         } catch (Exception e) {
             e.printStackTrace();
