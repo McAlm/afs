@@ -45,9 +45,7 @@ public class FooAppTest extends ZeebeTestUtil {
 
         // completeServiceTask("foo");
 
-        waitForServiceTask("fooTask", Duration.ofSeconds(5));
-
-        
+        waitForServiceTask("fooTask", Duration.ofSeconds(5), true);
 
         completeUserTask("barTask");
 
@@ -57,5 +55,25 @@ public class FooAppTest extends ZeebeTestUtil {
         Mockito.verify(fooService).executeFoo("foo");
         Mockito.verifyNoMoreInteractions(fooService);
 
+    }
+
+
+
+    @Test
+    public void failFooCausesIncident() throws InterruptedException, TimeoutException {
+
+        Mockito.when(fooService.executeFoo("foo")).thenThrow(new RuntimeException("Ooops"));
+        // start a process instance
+        ProcessInstanceEvent processInstance = client.newCreateInstanceCommand() //
+                .bpmnProcessId("foo").latestVersion() //
+                .variables(Map.of("foo", "foo"))
+                .send().join();
+        BpmnAssert.assertThat(processInstance).isStarted();
+
+        // completeServiceTask("foo");
+
+        waitForServiceTask("fooTask", Duration.ofSeconds(5), false);
+
+        BpmnAssert.assertThat(processInstance).extractingLatestIncident().extractingErrorMessage().asString().startsWith("java.lang.RuntimeException: Ooops");
     }
 }

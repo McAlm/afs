@@ -209,7 +209,7 @@ public class ZeebeTestUtil {
 
     private boolean taskCompleted = false;
 
-    public void waitForServiceTask(String taskId, Duration maxWait) throws InterruptedException, TimeoutException {
+    public void waitForServiceTask(String taskId, Duration maxWait, boolean assertTimeout) throws InterruptedException, TimeoutException {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
         Runnable run = () -> {
@@ -237,7 +237,7 @@ public class ZeebeTestUtil {
             }
         }
 
-        if (!taskCompleted) {
+        if (!taskCompleted && assertTimeout) {
             Assertions.fail("Task " + taskId + " was expected to complete but it was not");
         } else {
             taskCompleted = false;
