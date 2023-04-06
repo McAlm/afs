@@ -1,4 +1,4 @@
-package de.afs.poc.connectors;
+package de.afs.poc.worker;
 
 import java.io.File;
 import java.util.List;
@@ -14,24 +14,20 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 import de.afs.poc.dto.Csv2JsonDto;
 import de.afs.poc.dto.KommunalesProdukt;
-import io.camunda.connector.api.annotation.OutboundConnector;
-import io.camunda.connector.api.outbound.OutboundConnectorContext;
-import io.camunda.connector.api.outbound.OutboundConnectorFunction;
+import io.camunda.zeebe.spring.client.annotation.JobWorker;
+import io.camunda.zeebe.spring.client.annotation.VariablesAsType;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-@OutboundConnector(name = "Csv2Json", inputVariables = { "csvInputFileName" }, type = "de.afs.poc.csv2Json:1")
-public class Csv2JsonConnector implements OutboundConnectorFunction {
+public class Csv2JsonConverterWorker {
 
     @Value("${afs.fips2fips2.fileTransferFolder}")
     private String fileTransferFolder;
 
-    @Override
-    public Object execute(OutboundConnectorContext context) throws Exception {
-
+    @JobWorker(type = "csv2Json", fetchVariables = "csvInputFileName", autoComplete = true)
+    public Csv2JsonDto convert(@VariablesAsType Csv2JsonDto dto) throws Exception{
         try {
-            Csv2JsonDto dto = context.getVariablesAsType(Csv2JsonDto.class);
 
             // verarbeite zu json
             CsvSchema produkteSchema = CsvSchema.emptySchema().withHeader();
@@ -52,6 +48,6 @@ public class Csv2JsonConnector implements OutboundConnectorFunction {
             e.printStackTrace();
             throw e;
         }
-    }
 
+    }
 }
