@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_06ns9k9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
+  <bpmn:process id="problemBeheben" name="Problemlösung" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="UserTaskForm_24ibtnv">{
+  "components": [
+    {
+      "text": "# Dies ist eine Camunda Form",
+      "type": "text",
+      "id": "Field_14271k3"
+    },
+    {
+      "label": "Mitarbeiter",
+      "type": "textfield",
+      "id": "Field_0sman4u",
+      "key": "employeeName",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Alte Zuständigkeit",
+      "type": "textfield",
+      "id": "Field_06reyio",
+      "key": "alteZustaendigkeit",
+      "validate": {
+        "required": true
+      },
+      "appearance": {}
+    },
+    {
+      "label": "Neue Zuständigkeit",
+      "type": "textfield",
+      "id": "Field_03don54",
+      "key": "neueZustaendigkeit"
+    },
+    {
+      "label": "Problem gelöst?",
+      "type": "checkbox",
+      "id": "Field_1dum0j0",
+      "key": "problemSolved"
+    }
+  ],
+  "type": "default",
+  "id": "fipsProblemForm",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.1.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.9.0"
+  },
+  "schemaVersion": 7
+}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0dwm27w</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="fipsProblemBeheben" name="Problem beheben">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:input source="=zustaendigkeit" target="alteZustaendigkeit" />
+          <zeebe:output source="=neueZustaendigkeit" target="zustaendigkeit" />
+          <zeebe:output source="=employeeName" target="employeeName" />
+          <zeebe:output source="=alteZustaendigkeit" target="alteZustaendigkeit" />
+          <zeebe:output source="={alteZustaendigkeit: alteZustaendigkeit, &#10;employeeName: employeeName,&#10;zustaendigkeit: zustaendigkeit}" target="errorLogValue" />
+        </zeebe:ioMapping>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:UserTaskForm_24ibtnv" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0dwm27w</bpmn:incoming>
+      <bpmn:outgoing>Flow_1htmiu8</bpmn:outgoing>
+      <bpmn:property id="Property_188bsgx" name="__targetRef_placeholder" />
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0772nyf" name="Problem protokollieren" zeebe:modelerTemplate="79fb2eab-2ec2-4fa3-8060-8763f85b5109">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="errorLog" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=alteZustaendigkeit" target="responsibility" />
+          <zeebe:input source="=employeeName" target="employee" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1htmiu8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hsr613</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1htmiu8" sourceRef="fipsProblemBeheben" targetRef="Activity_0772nyf" />
+    <bpmn:endEvent id="Event_09zmudz">
+      <bpmn:incoming>Flow_1hsr613</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1hsr613" sourceRef="Activity_0772nyf" targetRef="Event_09zmudz" />
+    <bpmn:sequenceFlow id="Flow_0dwm27w" sourceRef="StartEvent_1" targetRef="fipsProblemBeheben" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="problemBeheben">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qcyuxw_di" bpmnElement="fipsProblemBeheben">
+        <dc:Bounds x="340" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vtstjz_di" bpmnElement="Activity_0772nyf">
+        <dc:Bounds x="530" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_09zmudz_di" bpmnElement="Event_09zmudz">
+        <dc:Bounds x="722" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0dwm27w_di" bpmnElement="Flow_0dwm27w">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="340" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1htmiu8_di" bpmnElement="Flow_1htmiu8">
+        <di:waypoint x="440" y="117" />
+        <di:waypoint x="530" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hsr613_di" bpmnElement="Flow_1hsr613">
+        <di:waypoint x="630" y="117" />
+        <di:waypoint x="722" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -11,6 +11,7 @@ import io.camunda.zeebe.spring.client.annotation.Deployment;
 @Deployment(resources = { 
 	"classpath:foo.bpmn", //
 	"classpath:fipsExportImport.bpmn",//
+	"classpath:problemBehebung.bpmn",//
     "classpath:evaluateEndpoint.dmn" //
 	})
 public class PocApplication {
