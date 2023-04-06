@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0a5abel" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
+  <bpmn:process id="EventSubProcessTest" name="Event Subprocess Test" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_16t335m</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_16t335m" sourceRef="StartEvent_1" targetRef="Activity_0537by7" />
+    <bpmn:endEvent id="Event_1wv5e4o">
+      <bpmn:incoming>Flow_0c0dytu</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0c0dytu" sourceRef="Activity_0537by7" targetRef="Event_1wv5e4o" />
+    <bpmn:serviceTask id="Activity_0537by7" name="Non existent worker">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="nonExistentWorker" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_16t335m</bpmn:incoming>
+      <bpmn:outgoing>Flow_0c0dytu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:subProcess id="Activity_14qo954" triggeredByEvent="true">
+      <bpmn:sequenceFlow id="Flow_0tk7kku" sourceRef="Event_10tpskn" targetRef="Activity_1h7u9na" />
+      <bpmn:endEvent id="Event_19vj2yz">
+        <bpmn:incoming>Flow_0s0u5pt</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0s0u5pt" sourceRef="Activity_1h7u9na" targetRef="Event_19vj2yz" />
+      <bpmn:startEvent id="Event_10tpskn" isInterrupting="false">
+        <bpmn:outgoing>Flow_0tk7kku</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_17stvwu">
+          <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R2/PT10S</bpmn:timeCycle>
+        </bpmn:timerEventDefinition>
+      </bpmn:startEvent>
+      <bpmn:userTask id="Activity_1h7u9na" name="Implementiere fehlenden WOrker">
+        <bpmn:incoming>Flow_0tk7kku</bpmn:incoming>
+        <bpmn:outgoing>Flow_0s0u5pt</bpmn:outgoing>
+      </bpmn:userTask>
+    </bpmn:subProcess>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="EventSubProcessTest">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1wv5e4o_di" bpmnElement="Event_1wv5e4o">
+        <dc:Bounds x="432" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0n3vpki_di" bpmnElement="Activity_0537by7">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1darmn6_di" bpmnElement="Activity_14qo954" isExpanded="true">
+        <dc:Bounds x="180" y="240" width="350" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19vj2yz_di" bpmnElement="Event_19vj2yz">
+        <dc:Bounds x="472" y="322" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19lqwfr_di" bpmnElement="Event_10tpskn">
+        <dc:Bounds x="220" y="322" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0m3w1vk_di" bpmnElement="Activity_1h7u9na">
+        <dc:Bounds x="310" y="300" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0tk7kku_di" bpmnElement="Flow_0tk7kku">
+        <di:waypoint x="256" y="340" />
+        <di:waypoint x="310" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s0u5pt_di" bpmnElement="Flow_0s0u5pt">
+        <di:waypoint x="410" y="340" />
+        <di:waypoint x="472" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16t335m_di" bpmnElement="Flow_16t335m">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c0dytu_di" bpmnElement="Flow_0c0dytu">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="432" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
