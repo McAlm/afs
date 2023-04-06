@@ -24,28 +24,27 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class LoadJson {
-    
+
     @Value("${afs.fips2fips2.fileTransferFolder}")
     private String fileTransferFolder;
 
-    @JobWorker(type="loadJson", fetchVariables = "ausgabeDatei", autoComplete = true)
-    public Map<String, Object> loadJson(@Variable String ausgabeDatei) throws Exception{
+    @JobWorker(type = "loadJson", fetchVariables = "ausgabeDatei", autoComplete = true)
+    public Map<String, Object> loadJson(@Variable String ausgabeDatei) throws Exception {
 
         log.info("lade JSON aus Datei " + fileTransferFolder + ausgabeDatei);
         try {
             Path path = Paths.get(fileTransferFolder + ausgabeDatei);
             String json = new String(Files.readAllBytes(path));
-            // ObjectMapper mapper = new ObjectMapper();
-            // ArrayList<KommunalesProdukt> clazz= new ArrayList<KommunalesProdukt>();
-            // ArrayList<KommunalesProdukt> readValue = mapper.readValue(json, clazz.getClass());
-            log.info("returning json: " + json);
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<KommunalesProdukt> clazz = new ArrayList<KommunalesProdukt>();
+            ArrayList<KommunalesProdukt> readValue = mapper.readValue(json, clazz.getClass());
             Map<String, Object> vars = new HashMap<>();
-            vars.put("json", json);
+            vars.put("json", readValue);
             return vars;
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
         }
-        
+
     }
 }
